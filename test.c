@@ -10,6 +10,7 @@
 #define INOTIFY_TEST_PATH "/tmp/inotify_test.tmp"
 static int test_inotify_support()
 {
+    int is_ok = 1;
     int fd = inotify_init();
     if (fd < 0)
     {
@@ -61,22 +62,23 @@ static int test_inotify_support()
     if (count == 0 || ! FD_ISSET(fd, &fds))
     {
         fprintf(stderr, "inotify file descriptor not readable. Is inotify busted?\n");
+        is_ok = 0;
     }
     else
     {
         fprintf(stderr, "inotify seems OK\n");
+        is_ok = 1;
     }
     
     if (fd >= 0)
     {
         close(fd);
     }
-    
+    return is_ok;
 }
  
 int main(void)
 {
-    test_inotify_support();
-    return 0;
+    return test_inotify_support() ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
